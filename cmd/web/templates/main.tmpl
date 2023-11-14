@@ -1,9 +1,7 @@
 <main>
-    <h1 class="flex justify-center font-bold text-2xl">WRC Web Telemetry</h1>
+    <h1 class="flex m-2 justify-center font-bold text-[#EC5A2A] text-5xl">WRC Web Telemetry</h1>
 
-    <div class="flex justify-center text-xl" hx-get="/templates/timer" hx-swap="innerHTML"
-        hx-trigger="every 100ms"></div>
-    <div class="grid grid-cols-3 w-screen">
-
+       <div class="flex justify-center text-xl">
+        {{template "partials/timer"}}
     </div>
 </main>

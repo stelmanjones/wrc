@@ -1,21 +1,16 @@
-<div class="stats flex-none stats-vertical shadow">
+<div hx-ext="sse"
+  sse-connect="/sse" class="stats w-[300px] flex-none stats-vertical shadow border-2 rounded-md border-[#EC5A2A]">
 
-  <div class="stat">
+<div class="stat bg-[#232A43]">
     <div class="stat-title">Stage Time</div>
-    <div class="stat-value text-primary-content">{{.Current}}</div>
-    <div class="stat-desc">Jan 1st - Feb 1st</div>
+    <div class="stat-value text-white" id="currentTime">{{.Current}}</div>
+    <div class="stat-desc">hh:mm:ss</div>
   </div>
 
-  <div class="stat">
+  <div class="stat bg-[#232A43]">
     <div class="stat-title">Ingame Time</div>
-    <div class="stat-value">{{.Total}}</div>
-    <div class="stat-desc">↗︎ 400 (22%)</div>
-  </div>
-
-  <div class="stat">
-    <div class="stat-title">New Registers</div>
-    <div class="stat-value">1,200</div>
-    <div class="stat-desc">↘︎ 90 (14%)</div>
+    <div class="stat-value" id="inGameTime">{{.Total}}</div>
+    <div class="stat-desc">hh:mm:ss</div>
   </div>
 
 </div>

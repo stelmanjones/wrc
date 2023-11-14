@@ -42,7 +42,7 @@ func main() {
 
 	defer conn.Close()
 	log.Debug("Starting server!", "address", udpAddress)
-	go udp.ListenForPacket(conn, ch, refreshRate)
+	go udp.ListenForPacket(conn, ch)
 	go input.ListenForInput(in)
 
 	var packet wrc.Packet

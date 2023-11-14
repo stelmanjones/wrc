@@ -203,9 +203,14 @@ func (p *Packet) ToJSON() ([]byte,error) {
 	return json.Marshal(p)
 }
 
+// StageProgress returns the current stage's progress as a percentage.
+func (p *Packet) StageProgress() int {
+	return int((p.StageCurrentDistance / p.StageLength) * 100)
+}
+
 type ThreadSafePacket struct {
 	Mu     *sync.RWMutex
-	Packet Packet
+	Data Packet
 }
 
 func NewThreadSafePacket() *ThreadSafePacket {

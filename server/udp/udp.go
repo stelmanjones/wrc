@@ -13,9 +13,9 @@ import (
 
 var logger log.Logger = *log.New(os.Stdout).WithPrefix("UDP")
 
-func ListenForPacket(conn net.PacketConn, ch chan wrc.Packet, refreshRate int) {
+func ListenForPacket(conn net.PacketConn, ch chan wrc.Packet) {
 	buf := make([]byte, binary.Size(wrc.Packet{}))
-	delay := 1000 / refreshRate
+	delay := 1000 / 30
 	ticker := time.NewTicker(time.Duration(delay * int(time.Millisecond)))
 	defer ticker.Stop()
 	for {

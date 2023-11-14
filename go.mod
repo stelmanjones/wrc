@@ -35,6 +35,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.15.2 // indirect
+	github.com/ompluscator/dynamic-struct v1.4.0
 	github.com/reiver/go-fourcc v0.0.0-20180806081833-7efda051ce0e
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/spf13/pflag v1.0.5

@@ -33,11 +33,16 @@
     --b1: 0 0% 100%;
     --b2: 0 0% 95%;
     --b3: 180 2% 90%;
-    --bc: 215 28% 17%
+    --bc: 215 28% 17%;
+    --wrc-blue: #252c47;
+    --wrc-orange: #EC5A2A;
+
 }
 @media (prefers-color-scheme: dark) {
     :root {
         color-scheme: dark;
+        --wrc-blue: #252c47;
+        --wrc-orange: #EC5A2A;
         --pf: 262 80% 43%;
         --sf: 316 70% 43%;
         --af: 175 70% 34%;

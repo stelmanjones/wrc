@@ -13,7 +13,6 @@ import (
 	"github.com/stelmanjones/wrc"
 	"github.com/stelmanjones/wrc/cmd/tui/input"
 	"github.com/stelmanjones/wrc/cmd/webserver/routes"
-	"github.com/stelmanjones/wrc/server/udp"
 	"github.com/valyala/fasthttp"
 )
 
@@ -69,7 +68,7 @@ func run() {
 	defer conn.Close()
 
 	app := routes.RegisterRoutes()
-	go udp.ListenForPacket(conn, ch)
+	go wrc.ListenForPacket(conn, ch)
 	go fasthttp.ListenAndServe(":9999",app.Handler)
 	go input.ListenForInput(in)
 	var packet wrc.Packet

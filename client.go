@@ -6,12 +6,12 @@ import (
 
 	"github.com/charmbracelet/log"
 )
-
+type PacketQueue = FIFOQueue[Packet]
 // Client is used to manage incoming UDP data.
 type Client struct {
 	ch       chan Packet
 	mu       *sync.Mutex
-	data     *FIFOQueue[Packet]
+	data     *PacketQueue
 	queueLen int
 }
 

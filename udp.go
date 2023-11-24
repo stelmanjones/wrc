@@ -1,33 +1,30 @@
-package udp
+package wrc
 
 import (
 	"bytes"
 	"encoding/binary"
 	"net"
-	"os"
 	"time"
 
 	"github.com/charmbracelet/log"
-	"github.com/stelmanjones/wrc"
 )
 
-var logger log.Logger = *log.New(os.Stdout).WithPrefix("UDP")
-
-func ListenForPacket(conn net.PacketConn, ch chan wrc.Packet) {
-	buf := make([]byte, binary.Size(wrc.Packet{}))
+func ListenForPacket(conn net.PacketConn, ch chan Packet) {
+	buf := make([]byte, binary.Size(Packet{}))
 	delay := 1000 / 30
 	ticker := time.NewTicker(time.Duration(delay * int(time.Millisecond)))
 	defer ticker.Stop()
 	for {
 		_, _, err := conn.ReadFrom(buf)
 		if err != nil {
-			logger.Error(err)
+			log.WithPrefix("UDP").Error(err)
 		}
-		var packet wrc.Packet
+		var packet Packet
 		err = binary.Read(bytes.NewReader(buf), binary.LittleEndian, &packet)
 		if err != nil {
-			logger.Error(err)
+			log.WithPrefix("UDP").Error(err)
 		}
+		packet.PacketUID++
 		ch <- packet
 
 	}

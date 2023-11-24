@@ -1,17 +1,17 @@
 package wrc
 
 import (
-	"encoding/json"
 	"sync"
 	"time"
 
-	"github.com/stelmanjones/wrc/units"
+	"github.com/wI2L/jettison"
 )
+
+// Percentage is an alias for int
+type Percentage int
 
 // Packet represents the default WRC data packet.
 type Packet struct {
-	// An automatic channel that exports the packet's 4CC code. This allows the use of packet headers to receive UDP on a single socket with reliable network connections.
-
 	// A rolling unique identifier for the current packet. Can be used to order and drop received packets.
 	PacketUID uint64 `json:"packet_uid"`
 
@@ -189,27 +189,49 @@ type Packet struct {
 	// Total length of current stage.
 	StageLength float64 `json:"stage_length"`
 }
+
 // CurrentStageTime returns current stagetime as a formatted string. "03:42.583"
 func (p *Packet) CurrentStageTime() (t string) {
-	return units.Timespan(time.Duration(p.StageCurrentTime * float32(time.Second))).Format("04:05.000")
-}
-// InGameTime returns current stagetime as a formatted string. "03:42.583"
-func (p *Packet) InGameTime() (t string) {
-	return units.Timespan(time.Duration(p.GameTotalTime * float32(time.Second))).Format("04:05.000")
+	return Timespan(time.Duration(p.StageCurrentTime * float32(time.Second))).Format("04:05.000")
 }
 
-//ToJSON returns the packet as marshaled JSON.
-func (p *Packet) ToJSON() ([]byte,error) {
-	return json.Marshal(p)
+// InGameTime returns time spent ingame as a formatted string. "03:42.583"
+func (p *Packet) InGameTime() (t string) {
+	return Timespan(time.Duration(p.GameTotalTime * float32(time.Second))).Format("04:05.000")
+}
+
+// ToJSON returns the packet as marshaled JSON.
+func (p *Packet) ToJSON() ([]byte, error) {
+	return jettison.Marshal(p)
 }
 
 // StageProgress returns the current stage's progress as a percentage.
-func (p *Packet) StageProgress() int {
-	return int((p.StageCurrentDistance / p.StageLength) * 100)
+func (p *Packet) StageProgress() Percentage {
+	return Percentage((p.StageCurrentDistance / p.StageLength) * 100)
+}
+
+// Throttle returns the current throttle value as a percentage.
+func (p *Packet) Throttle() Percentage {
+	return Percentage(p.VehicleThrottle * 100)
+}
+
+// Brake returns the current brake value as a percentage.
+func (p *Packet) Brake() Percentage {
+	return Percentage(p.VehicleBrake * 100)
+}
+
+// Clutch returns the current clutch value as a percentage. (100 = engaged)
+func (p *Packet) Clutch() Percentage {
+	return Percentage(p.VehicleClutch * 100)
+}
+
+// Handbrake returns the current handbrake value as a percentage.
+func (p *Packet) Handbrake() Percentage {
+	return Percentage(p.VehicleHandbrake * 100)
 }
 
 type ThreadSafePacket struct {
-	Mu     *sync.RWMutex
+	Mu   *sync.RWMutex
 	Data Packet
 }
 

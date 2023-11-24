@@ -76,7 +76,7 @@ func main() {
 			}
 		case packet = <-ch:
 			{
-				log.Infof("Packet:", "Stage Length", packet.StageLength, "Current Time", packet.StageCurrentTime)
+				log.Infof("Stage Length", packet.StageProgress(), "Current Time", packet.CurrentStageTime())
 			}
 		default:
 			continue

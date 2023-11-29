@@ -10,7 +10,6 @@ import (
 	flag "github.com/spf13/pflag"
 	"github.com/stelmanjones/wrc"
 	"github.com/stelmanjones/wrc/cmd/tui/input"
-	"github.com/stelmanjones/wrc/server/udp"
 )
 
 var (
@@ -42,7 +41,7 @@ func main() {
 
 	defer conn.Close()
 	log.Debug("Starting server!", "address", udpAddress)
-	go udp.ListenForPacket(conn, ch)
+	go wrc.ListenForPacket(conn, ch)
 	go input.ListenForInput(in)
 
 	var packet wrc.Packet

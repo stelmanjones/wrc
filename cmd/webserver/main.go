@@ -30,7 +30,6 @@ const (
 	maxMessageSize = 512
 )
 
-
 var rootCmd = &cobra.Command{
 	Use:   "wrc",
 	Short: "A telemetry server and library made for EAS WRC.",
@@ -68,8 +67,8 @@ func run() {
 	defer conn.Close()
 
 	app := routes.RegisterRoutes()
-	go wrc.ListenForPacket(conn, ch)
-	go fasthttp.ListenAndServe(":9999",app.Handler)
+	go routes.Client.Run(conn)
+	go fasthttp.ListenAndServe(":9999", app.Handler)
 	go input.ListenForInput(in)
 	var packet wrc.Packet
 	for {
@@ -103,14 +102,15 @@ func run() {
 		case packet = <-ch:
 			{
 
-				routes.WrcPacket.Mu.Lock()
-				if packet.PacketUID != routes.WrcPacket.Data.PacketUID {
-					routes.WrcPacket.Data = packet
+				err := routes.Client.Push(&packet)
+				if err != nil {
+					log.Error(err)
 				}
-				routes.WrcPacket.Mu.Unlock()
+
 			}
 		default:
 			continue
 		}
 	}
 }
+

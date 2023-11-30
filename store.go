@@ -14,7 +14,7 @@ func NewWrcDataStore(d []*Packet) *WrcDataStore {
 	return &WrcDataStore{
 		&sync.RWMutex{},
 		d,
-		1000,
+		600,
 	}
 }
 
@@ -25,18 +25,19 @@ func (w *WrcDataStore) Push(p *Packet) error {
 	if p == nil {
 		return ErrNoData
 	}
-	if len(w.store) >= w.max_size {
-		w.store = append(w.store[1:], p)
+	if len(w.store) == w.max_size {
+		w.store = w.store[1:]
+		w.store = append(w.store[0:], p)
 		return nil
 	}
-	w.store = append(w.store, p)
+	w.store = append(w.store[0:], p)
 	return nil
 }
 
 func (w *WrcDataStore) Clear() error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
-	w.store = make([]*Packet, w.max_size)
+	w.store = make([]*Packet, 0, w.max_size)
 	return nil
 }
 

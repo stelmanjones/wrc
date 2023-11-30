@@ -2,6 +2,11 @@ package wrc
 
 import "time"
 
+const (
+	MpsToMph  float32 = 2.237
+	MpsToKmph float32 = 3.6
+)
+
 // Timespan is a helper type for formatting of laptimes.
 type Timespan time.Duration
 

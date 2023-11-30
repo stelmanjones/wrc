@@ -2,43 +2,75 @@ package wrc
 
 import (
 	"net"
+	"os"
 
 	"github.com/charmbracelet/log"
 )
 
+var clogger = log.New(os.Stderr).WithPrefix("CLIENT")
+
 // Client is used to manage incoming UDP data.
 type Client struct {
+	conn net.PacketConn
 	*WrcDataStore
-	ch chan Packet
+	ch    chan Packet
+	Debug bool
 }
 
 // NewWrcClient returns a new client.
-func NewWrcClient() *Client {
+func New(conn net.PacketConn) *Client {
+	clogger.Info("WRC Client initialized! 🏁")
+
 	return &Client{
-		NewWrcDataStore(make([]*Packet, 1000)),
-		make(chan Packet, 1000),
+		conn,
+		NewWrcDataStore(make([]*Packet, 0, 600)),
+		make(chan Packet, 600),
+		false,
+	}
+}
+
+// NewWrcDebugClient returns a new client with some extra debug info.
+func NewDebug(conn net.PacketConn) *Client {
+	clogger.Info("WRC Client initialized! 🏁")
+
+	return &Client{
+		conn,
+		NewWrcDataStore(make([]*Packet, 0, 600)),
+		make(chan Packet, 600),
+		true,
 	}
 }
 
 // AverageSpeed returns your average speed based on all 'VehicleSpeed' values in the store.
-func (w *Client) AverageSpeed() (float32, error) {
+func (c *Client) AverageSpeedKmph() (float32, error) {
 	var speed float32
-	w.mu.RLock()
-	defer w.mu.RUnlock()
-	for _, s := range w.store {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	for _, s := range c.store {
 		speed += s.VehicleSpeed
 	}
-	length := w.Size()
-	return float32(speed / float32(length)), nil
+	length := c.Size()
+	return float32(speed/float32(length)) * MpsToKmph, nil
+}
+
+func (c *Client) AverageSpeedMph() (float32, error) {
+	var speed float32
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	for _, s := range c.store {
+		speed += s.VehicleSpeed
+	}
+	length := len(c.store)
+	return float32(speed/float32(length)) * MpsToMph, nil
 }
 
 // Run starts the UDP server and begins to listen for incoming packets.
-func (w *Client) Run(conn net.PacketConn) error {
-	log.WithPrefix("UDP").Info("Started listening for packets.", "address", conn.LocalAddr().String())
-	go ListenForPacket(conn, w.ch)
+func (c *Client) Run() error {
+	clogger.Info("Started listening for packets.", "address", c.conn.LocalAddr().String())
+	go ListenForPacket(c.conn, c.ch)
 
-	for p := range w.ch {
-		err := w.Push(&p)
+	for p := range c.ch {
+		err := c.Push(&p)
 		if err != nil {
 			return err
 		}

@@ -229,6 +229,14 @@ func (p *Packet) Handbrake() Percentage {
 	return Percentage(p.VehicleHandbrake * 100)
 }
 
+func (p *Packet) Kmph() float32 {
+	return p.VehicleSpeed * MpsToKmph
+}
+
+func (p *Packet) Mph() float32 {
+	return p.VehicleSpeed * MpsToMph
+}
+
 func NewPacket() *Packet {
 	return &Packet{
 		PacketUID:                 0,

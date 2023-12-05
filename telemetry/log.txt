@@ -1,2 +1,0 @@
-Parsing file 'custom1.json'
-Loaded upd packet structure 'custom1'

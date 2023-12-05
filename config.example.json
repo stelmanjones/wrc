@@ -55,8 +55,8 @@
 				"structure": "custom1",
 				"packet": "session_update",
 				"ip": "127.0.0.1",
-				"port": 20777,
-				"frequencyHz": -1,
+				"port": 6969,
+				"frequencyHz": 60,
 				"bEnabled": false
 			}
 		]

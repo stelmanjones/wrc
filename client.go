@@ -12,12 +12,12 @@ var clogger = log.New(os.Stderr).WithPrefix("CLIENT")
 // Client is used to manage incoming UDP data.
 type Client struct {
 	conn net.PacketConn
-	*WrcDataStore
+	*DataStore
 	ch    chan Packet
 	Debug bool
 }
 
-// NewWrcClient returns a new client.
+// New returns a new client.
 func New(conn net.PacketConn) *Client {
 	clogger.Info("WRC Client initialized! 🏁")
 
@@ -29,7 +29,7 @@ func New(conn net.PacketConn) *Client {
 	}
 }
 
-// NewWrcDebugClient returns a new client with some extra debug info.
+// NewDebug returns a new client with some extra debug info.
 func NewDebug(conn net.PacketConn) *Client {
 	clogger.Info("WRC Client initialized! 🏁")
 
@@ -41,7 +41,7 @@ func NewDebug(conn net.PacketConn) *Client {
 	}
 }
 
-// AverageSpeed returns your average speed based on all 'VehicleSpeed' values in the store.
+// AverageSpeedKmph returns your average speed based on all 'VehicleSpeed' values in the store.
 func (c *Client) AverageSpeedKmph() (float32, error) {
 	var speed float32
 	c.mu.RLock()
@@ -52,7 +52,7 @@ func (c *Client) AverageSpeedKmph() (float32, error) {
 	length := c.Size()
 	return float32(speed/float32(length)) * MpsToKmph, nil
 }
-
+// AverageSpeedMph returns your average speed based on all 'VehicleSpeed' values in the store.
 func (c *Client) AverageSpeedMph() (float32, error) {
 	var speed float32
 	c.mu.RLock()
@@ -64,16 +64,18 @@ func (c *Client) AverageSpeedMph() (float32, error) {
 	return float32(speed/float32(length)) * MpsToMph, nil
 }
 
-// Run starts the UDP server and begins to listen for incoming packets.
+// Run starts the UDP client and begins to listen for incoming packets.
 func (c *Client) Run() error {
 	clogger.Info("Started listening for packets.", "address", c.conn.LocalAddr().String())
-	go ListenForPacket(c.conn, c.ch)
+	go Listen(c.conn, c.ch)
 
 	for p := range c.ch {
 		err := c.Push(&p)
 		if err != nil {
 			return err
+
 		}
 	}
+	clogger.Info("Bye! 👋")
 	return nil
 }

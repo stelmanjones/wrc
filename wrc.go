@@ -189,8 +189,8 @@ type Packet struct {
 	StageLength float64 `json:"stage_length"`
 }
 
-// CurrentStageTime returns current stagetime as a formatted string. "03:42.583"
-func (p *Packet) CurrentStageTime() (t string) {
+// ElapsedStageTime returns current stagetime as a formatted string. "03:42.583"
+func (p *Packet) ElapsedStageTime() (t string) {
 	return Timespan(time.Duration(p.StageCurrentTime * float32(time.Second))).Format("04:05.000")
 }
 
@@ -228,15 +228,15 @@ func (p *Packet) Clutch() Percentage {
 func (p *Packet) Handbrake() Percentage {
 	return Percentage(p.VehicleHandbrake * 100)
 }
-
+// Kmph returns the vehicle speed in kilometers per hour.
 func (p *Packet) Kmph() float32 {
 	return p.VehicleSpeed * MpsToKmph
 }
-
+// Mph returns the vehicle speed in miles per hour.
 func (p *Packet) Mph() float32 {
 	return p.VehicleSpeed * MpsToMph
 }
-
+// NewPacket creates a new Packet instance with all fields initialized to their zero values.
 func NewPacket() *Packet {
 	return &Packet{
 		PacketUID:                 0,

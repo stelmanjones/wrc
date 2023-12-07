@@ -42,8 +42,8 @@ func (w *DataStore) Clear() error {
 	return nil
 }
 
-// Last returns the latest packet from the store.
-func (w *DataStore) Last() (*Packet, error) {
+// Latest returns the latest packet from the store.
+func (w *DataStore) Latest() (*Packet, error) {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 	if len(w.store) == 0 {

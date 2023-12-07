@@ -9,6 +9,13 @@ import (
 // Percentage is an alias for int
 type Percentage int
 
+// Position of the car in 3D
+type Position struct {
+	X float32
+	Y float32
+	Z float32
+}
+
 // Packet represents the default WRC data packet.
 type Packet struct {
 	// A rolling unique identifier for the current packet. Can be used to order and drop received packets.
@@ -192,6 +199,14 @@ type Packet struct {
 // ElapsedStageTime returns current stagetime as a formatted string. "03:42.583"
 func (p *Packet) ElapsedStageTime() (t string) {
 	return Timespan(time.Duration(p.StageCurrentTime * float32(time.Second))).Format("04:05.000")
+}
+// CarPosition returns the current position of the car.
+func (p *Packet) CarPosition() *Position {
+	return &Position{
+		X: p.VehiclePositionX,
+		Y: p.VehiclePositionY,
+		Z: p.VehiclePositionZ,
+	}
 }
 
 // InGameTime returns time spent ingame as a formatted string. "03:42.583"

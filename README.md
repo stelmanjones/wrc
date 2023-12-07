@@ -1,6 +1,5 @@
 <h1 align="center">
-  <a href="https://github.com/dec0dOS/amazing-github-template">
-    <img src="github.com/stelmanjones/wrc/docs/wrc-logo.svg" alt="Logo" width="125" height="125">
+    <img src="github.com/stelmanjones/wrc/docs/wrc-logo.png" alt="Logo" width="125" height="125">
   </a>
 </h1>
 

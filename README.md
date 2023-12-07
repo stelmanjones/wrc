@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="https://github.com/stelmanjones/wrc/blob/main/docs/wrc-logo.svg" alt="Logo" width="125" height="125">
+    <img src="https://github.com/stelmanjones/wrc/blob/main/docs/wrc-logo.svg" alt="Logo" width="356" height="125">
   </a>
 </h1>
 

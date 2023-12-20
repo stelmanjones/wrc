@@ -49,7 +49,7 @@ go get github.com/stelmanjones/wrc
 
 var (
   	conn, err = net.ListenPacket("udp4", ":6969")
-  Client = wrc.New(conn)
+  Client = wrc.New()
 )
 
 func main() {

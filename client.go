@@ -11,18 +11,16 @@ var clogger = log.New(os.Stderr).WithPrefix("CLIENT")
 
 // Client is used to manage incoming UDP data.
 type Client struct {
-	conn net.PacketConn
 	*DataStore
 	ch    chan Packet
 	Debug bool
 }
 
 // New returns a new client.
-func New(conn net.PacketConn) *Client {
+func New() *Client {
 	clogger.Info("WRC Client initialized! 🏁")
 
 	return &Client{
-		conn,
 		NewWrcDataStore(make([]*Packet, 0, 600)),
 		make(chan Packet, 600),
 		false,
@@ -30,11 +28,10 @@ func New(conn net.PacketConn) *Client {
 }
 
 // NewDebug returns a new client with some extra debug info.
-func NewDebug(conn net.PacketConn) *Client {
+func NewDebug() *Client {
 	clogger.Info("WRC Client initialized! 🏁")
 
 	return &Client{
-		conn,
 		NewWrcDataStore(make([]*Packet, 0, 600)),
 		make(chan Packet, 600),
 		true,
@@ -64,10 +61,12 @@ func (c *Client) AverageSpeedMph() (float32, error) {
 	return float32(speed/float32(length)) * MpsToMph, nil
 }
 
-// Run starts the UDP client and begins to listen for incoming packets.
-func (c *Client) Run() error {
-	clogger.Info("Started listening for packets.", "address", c.conn.LocalAddr().String())
-	go Listen(c.conn, c.ch)
+// Run starts the UDP client and begins to listen for incoming packets,
+// decoding them, and pushing them to the datastore.
+func (c *Client) Run(conn net.PacketConn) error {
+	clogger.Info("Started listening for packets.", "address",
+	 conn.LocalAddr().String())
+	go Listen(conn, c.ch)
 
 	for p := range c.ch {
 		err := c.Push(&p)

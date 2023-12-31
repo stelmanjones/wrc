@@ -38,6 +38,19 @@ func NewDebug() *Client {
 	}
 }
 
+
+// AverageFrameTime returns your average frame time based on all 'GameDeltaTime' values in the store.
+func (c *Client) AverageFrameTime() (float32, error) {
+	var delta float32
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	for _, s := range c.store {
+		delta += s.GameDeltaTime
+	}
+	length := c.Size()
+	return float32(delta / float32(length)), nil
+}
+
 // AverageSpeedKmph returns your average speed based on all 'VehicleSpeed' values in the store.
 func (c *Client) AverageSpeedKmph() (float32, error) {
 	var speed float32
@@ -49,6 +62,7 @@ func (c *Client) AverageSpeedKmph() (float32, error) {
 	length := c.Size()
 	return float32(speed/float32(length)) * MpsToKmph, nil
 }
+
 // AverageSpeedMph returns your average speed based on all 'VehicleSpeed' values in the store.
 func (c *Client) AverageSpeedMph() (float32, error) {
 	var speed float32
@@ -65,14 +79,13 @@ func (c *Client) AverageSpeedMph() (float32, error) {
 // decoding them, and pushing them to the datastore.
 func (c *Client) Run(conn net.PacketConn) error {
 	clogger.Info("Started listening for packets.", "address",
-	 conn.LocalAddr().String())
+		conn.LocalAddr().String())
 	go Listen(conn, c.ch)
 
 	for p := range c.ch {
 		err := c.Push(&p)
 		if err != nil {
 			return err
-
 		}
 	}
 	clogger.Info("Bye! 👋")

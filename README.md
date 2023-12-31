@@ -53,7 +53,6 @@ var (
 )
 
 func main() {
-  	ch := make(chan wrc.Packet)
 
     go Client.Run()
 
